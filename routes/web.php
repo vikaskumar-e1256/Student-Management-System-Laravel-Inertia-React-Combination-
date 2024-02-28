@@ -38,37 +38,37 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Teacher Router
-    Route::prefix('teacher/')->group(function(){
-        Route::get('list', [TeacherController::class, 'index'])
-            ->name('teacher.list');
-        Route::get('create', [TeacherController::class, 'create'])
-            ->name('teacher.create');
-        Route::post('store', [TeacherController::class, 'store'])
-            ->name('teacher.store');
-        Route::get('{teacher}/assigned-class-and-subject', [TeacherController::class, 'assignedClassAndSubject'])
-            ->name('teacher.assigned.classAndSubject');
-        Route::post('store/class-and-subject/{teacher}', [TeacherController::class, 'storeClassAndSubject'])
-            ->name('teacher.store.classAndSubject');
+    Route::controller(TeacherController::class)->prefix('teacher/')->name('teacher.')->group(function(){
+        Route::get('list', 'index')
+            ->name('list');
+        Route::get('create', 'create')
+            ->name('create');
+        Route::post('store', 'store')
+            ->name('store');
+        Route::get('{teacher}/assigned-class-and-subject', 'assignedClassAndSubject')
+            ->name('assigned.classAndSubject');
+        Route::post('store/class-and-subject/{teacher}', 'storeClassAndSubject')
+            ->name('store.classAndSubject');
     });
 
     // Student Router
-    Route::prefix('student/')->group(function(){
-        Route::get('list', [StudentController::class, 'index'])
-            ->name('student.list');
-        Route::get('create', [StudentController::class, 'create'])
-            ->name('student.create');
-        Route::post('store', [StudentController::class, 'store'])
-            ->name('student.store');
+    Route::controller(StudentController::class)->prefix('student/')->name('student.')->group(function(){
+        Route::get('list', 'index')
+            ->name('list');
+        Route::get('create', 'create')
+            ->name('create');
+        Route::post('store', 'store')
+            ->name('store');
     });
 
     // Subject Router
-    Route::prefix('subject/')->group(function(){
-        Route::get('list', [SubjectController::class, 'index'])
-            ->name('subject.list');
-        Route::get('create', [SubjectController::class, 'create'])
-            ->name('subject.create');
-        Route::post('store', [SubjectController::class, 'store'])
-            ->name('subject.store');
+    Route::controller(SubjectController::class)->prefix('subject/')->name('subject.')->group(function(){
+        Route::get('list', 'index')
+            ->name('list');
+        Route::get('create', 'create')
+            ->name('create');
+        Route::post('store', 'store')
+            ->name('store');
     });
 
 });
