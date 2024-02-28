@@ -7,6 +7,7 @@ use App\Models\Classes;
 use App\Models\Subject;
 use App\Models\Language;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subject\CreateRequest;
 
@@ -42,11 +43,13 @@ class SubjectController extends Controller
         unset($validatedData['languages']);
         unset($validatedData['classes_id']);
 
-        $subject = Subject::create($validatedData);
+        DB::transaction(function() use($validatedData, $languages, $classIDs) {
+            $subject = Subject::create($validatedData);
 
-        $subject->languages()->sync($languages);
+            $subject->languages()->sync($languages);
 
-        $subject->classes()->sync($classIDs);
+            $subject->classes()->sync($classIDs);
+        });
 
         return redirect()->route('subject.create')->with('success', 'Subject added successfully!');
     }

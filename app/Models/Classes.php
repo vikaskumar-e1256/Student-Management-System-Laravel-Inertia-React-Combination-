@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Scopes\ActiveScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Classes extends Model
 {
@@ -11,11 +12,23 @@ class Classes extends Model
 
     protected $table = 'classes';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'is_active'];
 
     public function teachers()
     {
         return $this->belongsToMany(Teacher::class);
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new ActiveScope);
     }
 
 }

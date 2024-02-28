@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('roll_number');
             $table->unsignedBigInteger('classes_id');
+            $table->tinyInteger('is_active')->default(true);
             $table->timestamps();
-            
+
             $table->foreign('classes_id')->references('id')->on('classes')->onDelete('cascade');
 
         });

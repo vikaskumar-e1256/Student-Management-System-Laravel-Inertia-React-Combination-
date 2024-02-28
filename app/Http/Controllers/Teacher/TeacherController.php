@@ -44,17 +44,16 @@ class TeacherController extends Controller
         return redirect()->route('teacher.create');
     }
 
-    public function assignedClassAndSubject($teacher_id)
+    public function assignedClassAndSubject(Teacher $teacher)
     {
-        Teacher::findOrFail($teacher_id);
         $classes = Classes::all();
         return Inertia::render('Teacher/AssignedClassAndSubject', [
             'classes' => $classes,
-            'create_url' => route('teacher.store.classAndSubject', $teacher_id),
+            'create_url' => route('teacher.store.classAndSubject', $teacher->id),
         ]);
     }
 
-    public function storeClassAndSubject(Request $request, $teacher_id)
+    public function storeClassAndSubject(Request $request, Teacher $teacher)
     {
         $request->validate([
             'classes_id' => 'required|exists:classes,id',
@@ -64,7 +63,6 @@ class TeacherController extends Controller
             'subject_ids.required' => 'This field is required.'
         ]);
 
-        $teacher = Teacher::findOrFail($teacher_id);
         $teacher->classes()->sync([$request->classes_id]);
         $teacher->subjects()->sync($request->subject_ids);
         return redirect()->back();

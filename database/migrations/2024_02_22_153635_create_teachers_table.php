@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->integer('age');
             $table->enum('sex', ['male', 'female', 'other']);
+            $table->tinyInteger('is_active')->default(true);
             $table->timestamps();
         });
     }
