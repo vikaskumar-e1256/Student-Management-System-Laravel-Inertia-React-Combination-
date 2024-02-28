@@ -45,9 +45,9 @@ Route::middleware('auth')->group(function () {
             ->name('teacher.create');
         Route::post('store', [TeacherController::class, 'store'])
             ->name('teacher.store');
-        Route::get('{teacher_id}/assigned-class-and-subject', [TeacherController::class, 'assignedClassAndSubject'])
+        Route::get('{teacher}/assigned-class-and-subject', [TeacherController::class, 'assignedClassAndSubject'])
             ->name('teacher.assigned.classAndSubject');
-        Route::post('store/class-and-subject/{teacher_id}', [TeacherController::class, 'storeClassAndSubject'])
+        Route::post('store/class-and-subject/{teacher}', [TeacherController::class, 'storeClassAndSubject'])
             ->name('teacher.store.classAndSubject');
     });
 
