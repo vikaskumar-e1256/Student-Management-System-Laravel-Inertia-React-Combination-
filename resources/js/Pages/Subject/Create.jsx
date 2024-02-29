@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
 import SuccessMessage from '@/Components/SuccessMessage';
+import Multiselect from 'multiselect-react-dropdown';
 
 
 export default function Dashboard({ auth, languages, classes }) {
+
     const { data, setData, post, errors } = useForm({
         name: '',
         languages: [],
@@ -13,6 +15,36 @@ export default function Dashboard({ auth, languages, classes }) {
     });
 
     const [successMessage, setSuccessMessage] = useState('');
+    const languageMultiselectRef = useRef(null); // Ref for languages Multiselect
+    const classMultiselectRef = useRef(null); // Ref for classes Multiselect
+
+
+    const [selectedLanguages, setSelectedLanguages] = useState([]);
+    const [selectedClasses, setSelectedClasses] = useState([]);
+
+    const handleLanguageSelect = (selectedList, selectedItem) => {
+        const selectedLanguageIds = selectedList.map(language => language.id);
+        setData('languages', selectedLanguageIds);
+        setSelectedLanguages(selectedList);
+    }
+
+    const handleLanguageRemove = (selectedList, removedItem) => {
+        const selectedLanguageIds = selectedList.map(language => language.id);
+        setData('languages', selectedLanguageIds);
+        setSelectedLanguages(selectedList);
+    }
+
+    const handleClassSelect = (selectedList, selectedItem) => {
+        const selectedClassesIds = selectedList.map(classes => classes.id);
+        setData('classes_id', selectedClassesIds);
+        setSelectedClasses(selectedList);
+    }
+
+    const handleClassRemove = (selectedList, removedItem) => {
+        const selectedClassesIds = selectedList.map(classes => classes.id);
+        setData('classes_id', selectedClassesIds);
+        setSelectedClasses(selectedList);
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -24,6 +56,13 @@ export default function Dashboard({ auth, languages, classes }) {
                     languages: [],
                     classes_id: [],
                 });
+                if (languageMultiselectRef.current) {
+                    languageMultiselectRef.current.resetSelectedValues();
+                }
+                if (classMultiselectRef.current) {
+                    classMultiselectRef.current.resetSelectedValues();
+                }
+
             },
         });
     };
@@ -47,6 +86,30 @@ export default function Dashboard({ auth, languages, classes }) {
 
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-4">
+                                    <Multiselect
+                                        options={languages}
+                                        selectedValues={selectedLanguages}
+                                        onSelect={handleLanguageSelect}
+                                        onRemove={handleLanguageRemove}
+                                        displayValue="name"
+                                        placeholder="Choose Languages"
+                                        ref={languageMultiselectRef}
+                                    />
+                                    {errors.languages && <p className="text-red-500 text-sm mt-1">{errors.languages}</p>}
+                                </div>
+                                <div className="mb-4">
+                                    <Multiselect
+                                        options={classes}
+                                        selectedValues={selectedClasses}
+                                        onSelect={handleClassSelect}
+                                        onRemove={handleClassRemove}
+                                        displayValue="name"
+                                        placeholder="Choose Class"
+                                        ref={classMultiselectRef}
+                                    />
+                                    {errors.classes_id && <p className="text-red-500 text-sm mt-1">{errors.classes_id}</p>}
+                                </div>
+                                <div className="mb-4">
                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                                         Name
                                     </label>
@@ -59,44 +122,6 @@ export default function Dashboard({ auth, languages, classes }) {
                                     />
                                     {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                                 </div>
-
-                                <div className="mb-4">
-                                    <label htmlFor="languages" className="block text-sm font-medium text-gray-700">
-                                        Languages
-                                    </label>
-                                    <select
-                                        id="languages"
-                                        className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                                        value={data.languages}
-                                        onChange={(e) => setData('languages', Array.from(e.target.selectedOptions, option => option.value))}
-                                        multiple
-                                    >
-                                        {languages.map((language) => (
-                                            <option key={language.id} value={language.id}>{language.name}</option>
-                                        ))}
-                                    </select>
-                                    {errors.languages && <p className="text-red-500 text-sm mt-1">{errors.languages}</p>}
-                                </div>
-
-                                <div className="mb-4">
-                                    <label htmlFor="class" className="block text-sm font-medium text-gray-700">
-                                        Class
-                                    </label>
-                                    <select
-                                        id="class"
-                                        className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                                        value={data.classes_id}
-                                        onChange={(e) => setData('classes_id', Array.from(e.target.selectedOptions, option => option.value))}
-                                        multiple
-                                    >
-                                        <option value="" disabled>Select Class</option>
-                                        {classes.map((classItem) => (
-                                            <option key={classItem.id} value={classItem.id}>{classItem.name}</option>
-                                        ))}
-                                    </select>
-                                    {errors.classes_id && <p className="text-red-500 text-sm mt-1">{errors.classes_id}</p>}
-                                </div>
-
                                 <div>
                                     <button
                                         type="submit"

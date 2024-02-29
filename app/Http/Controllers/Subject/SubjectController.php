@@ -24,8 +24,8 @@ class SubjectController extends Controller
 
     public function create()
     {
-        $languages = Language::all();
-        $classes = Classes::all();
+        $languages = Language::select(['id', 'name'])->get();
+        $classes = Classes::select(['id', 'name'])->get();
 
         return Inertia::render('Subject/Create', [
             'languages' => $languages,

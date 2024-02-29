@@ -29,4 +29,17 @@ class CreateRequest extends FormRequest
             'classes_id.*' => 'exists:classes,id',
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'classes_id.required' => 'Please choose the class.',
+            'classes_id.exists' => 'Do not be sneaky! Class Does not exist in our portal.',
+        ];
+    }
 }
