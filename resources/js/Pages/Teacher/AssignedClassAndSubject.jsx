@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
 import SuccessMessage from '@/Components/SuccessMessage';
+import Multiselect from 'multiselect-react-dropdown';
+
 
 
 export default function Dashboard({ auth, classes, create_url }) {
@@ -13,6 +15,22 @@ export default function Dashboard({ auth, classes, create_url }) {
 
     const [successMessage, setSuccessMessage] = useState('');
     const [availableSubjects, setAvailableSubjects] = useState([]);
+
+    const subjectMultiselectRef = useRef(null); // Ref for Subjects Multiselect
+
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
+
+    const handleSubjectSelect = (selectedList, selectedItem) => {
+        const selectedSubjectsIds = selectedList.map(subject => subject.id);
+        setData('subject_ids', selectedSubjectsIds);
+        setSelectedSubjects(selectedList);
+    }
+
+    const handleSubjectRemove = (selectedList, removedItem) => {
+        const selectedSubjectsIds = selectedList.map(subject => subject.id);
+        setData('subject_ids', selectedSubjectsIds);
+        setSelectedSubjects(selectedList);
+    }
 
     useEffect(() => {
         if (data.classes_id) {
@@ -43,6 +61,10 @@ export default function Dashboard({ auth, classes, create_url }) {
                     classes_id: '',
                     subject_ids: [],
                 });
+                if (subjectMultiselectRef.current) {
+                    subjectMultiselectRef.current.resetSelectedValues();
+                    setAvailableSubjects([]);
+                }
             },
         });
     };
@@ -87,6 +109,19 @@ export default function Dashboard({ auth, classes, create_url }) {
                                 </div>
 
                                 <div className="mb-4">
+                                    <Multiselect
+                                        options={availableSubjects}
+                                        selectedValues={selectedSubjects}
+                                        onSelect={handleSubjectSelect}
+                                        onRemove={handleSubjectRemove}
+                                        displayValue="name"
+                                        placeholder="Choose Subjects"
+                                        ref={subjectMultiselectRef}
+                                    />
+                                    {errors.subject_ids && <p className="text-red-500 text-sm mt-1">{errors.subject_ids}</p>}
+                                </div>
+
+                                {/* <div className="mb-4">
                                     <label htmlFor="subjects" className="block text-sm font-medium text-gray-700">
                                         Subjects
                                     </label>
@@ -102,7 +137,7 @@ export default function Dashboard({ auth, classes, create_url }) {
                                         ))}
                                     </select>
                                     {errors.subject_ids && <p className="text-red-500 text-sm mt-1">{errors.subject_ids}</p>}
-                                </div>
+                                </div> */}
 
                                 <div>
                                     <button

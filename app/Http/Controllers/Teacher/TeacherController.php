@@ -8,6 +8,7 @@ use App\Models\Teacher;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Teacher\CreateRequest;
+use App\Http\Requests\Other\StoreClassAndSubjectRequest;
 
 class TeacherController extends Controller
 {
@@ -53,16 +54,8 @@ class TeacherController extends Controller
         ]);
     }
 
-    public function storeClassAndSubject(Request $request, Teacher $teacher)
+    public function storeClassAndSubject(StoreClassAndSubjectRequest $request, Teacher $teacher)
     {
-        $request->validate([
-            'classes_id' => 'required|exists:classes,id',
-            'subject_ids' => 'required|array',
-            'subject_ids.*' => 'exists:subjects,id',
-        ], [
-            'subject_ids.required' => 'This field is required.'
-        ]);
-
         $teacher->classes()->sync([$request->classes_id]);
         $teacher->subjects()->sync($request->subject_ids);
         return redirect()->back();
